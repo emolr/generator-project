@@ -1,0 +1,10 @@
+{
+  "name": "<%= _.slugify(appname) %>",
+  "private": true,
+  "dependencies": {<% if (includeFoundation) { if (includeSass) { %>
+    "foundation": "~5.4.0",<% }} %> <% if (includeModernizr) { %>
+    "modernizr": "~2.8.3",<% } %>
+    "jquery": "~2.1.1"
+  },
+  "devDependencies": {}
+}
