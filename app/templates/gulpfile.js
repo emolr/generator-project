@@ -140,8 +140,7 @@ gulp.task('watch', ['browser-sync', 'serve'], function () {
         browserSync.reload();
     });
     <% if (includeAssemble) { %>
-        gulp.watch('app/templates/**/*.hbs', ['assemble']);
-    <% } %>
+    gulp.watch('app/templates/**/*.hbs', ['assemble']);<% } %>
     gulp.watch('app/styles/**/*.<%= includeSass ? 'scss' : 'css' %>', ['styles']);
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/images/**/*', ['images']);

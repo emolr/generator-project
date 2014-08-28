@@ -66,3 +66,44 @@
 <% } else { %>
 // Css here if foundation is not choosen.
 }<% } %>
+
+
+/**
+ * This scss is only for the welcome page, and is not
+ * present other places, and doesn't interfeere with your code
+ * if you don't delete it.
+*/
+.welcome-page {
+  padding-top: 150px;
+  font-family: verdana, sans-serif;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+.welcome-page .heading {
+  margin-bottom: 100px;
+}
+.welcome-page h1 {
+  font-size: 24px;
+  color: #5d676d;
+}
+.welcome-page h2 {
+  font-size: 18px;
+  color: #9fa4a7;
+  margin-bottom: 4px;
+}
+.welcome-page p {
+  font-size: 14px;
+  color: #9fa4a7;
+}
+.welcome-page a {
+  color: #36acf0;
+}
+.welcome-page .toolbelt {
+  border: none;
+  max-width: 900px;
+  margin: 0 auto 200px;
+}
+.welcome-page .toolbelt td {
+  text-align: center;
+}
+

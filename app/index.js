@@ -61,7 +61,7 @@ AppGenerator.prototype.askFor = function askFor() {
     }, {
       name: 'Assemble',
       value: 'includeAssemble',
-      checked: false
+      checked: true
     }]
   }];
 
@@ -118,10 +118,12 @@ AppGenerator.prototype.h5bp = function () {
 
 AppGenerator.prototype.assemble = function () {
   if (this.includeAssemble) {
-    this.copy('default.hbs', 'app/templates/layouts/default.hbs');
+    this.copy('assemble/default.hbs', 'app/templates/layouts/default.hbs');
+    this.copy('assemble/index.hbs', 'app/templates/index.hbs');
+    this.copy('assemble/default_head.hbs', 'app/templates/partials/default_head.hbs');
+    this.copy('assemble/default_scripts.hbs', 'app/templates/partials/default_scripts.hbs');
   }
 };
-
 
 AppGenerator.prototype.mainStylesheet = function () {
   var css = 'main.' + (this.includeSass ? 's' : '') + 'css';
@@ -134,24 +136,50 @@ AppGenerator.prototype.mainStylesheet = function () {
 };
 
 AppGenerator.prototype.writeIndex = function () {
-  this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
-  this.indexFile = this.engine(this.indexFile, this);
+  if (this.includeAssemble) {
+    this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), '/assemble/index.hbs'));
+    this.indexFile = this.engine(this.indexFile, this);
+  } else {
+    this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
+    this.indexFile = this.engine(this.indexFile, this);
 
-  // wire Foundation plugins
-  if (this.includeFoundation) {
-    var bs = 'bower_components/foundation/js/foundation.js';
-    this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
-      bs
-    ]);
+    // wire Foundation plugins
+    if (this.includeFoundation) {
+      var bs = 'bower_components/foundation/js/foundation.js';
+      this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
+        bs
+      ]);
+    }
+
+    this.indexFile = this.appendFiles({
+      html: this.indexFile,
+      fileType: 'js',
+      optimizedPath: 'scripts/main.js',
+      sourceFileList: ['scripts/main.js']
+    });
   }
-
-  this.indexFile = this.appendFiles({
-    html: this.indexFile,
-    fileType: 'js',
-    optimizedPath: 'scripts/main.js',
-    sourceFileList: ['scripts/main.js']
-  });
 };
+
+AppGenerator.prototype.writeHead = function () {
+  if (this.includeAssemble) {
+    this.headFile = this.readFileAsString(path.join(this.sourceRoot(), '/assemble/default_head.hbs'));
+    this.headFile = this.engine(this.headFile, this);
+  }
+}
+
+AppGenerator.prototype.writeScripts = function () {
+  if (this.includeAssemble) {
+    this.scriptFile = this.readFileAsString(path.join(this.sourceRoot(), '/assemble/default_scripts.hbs'));
+    this.scriptFile = this.engine(this.scriptFile, this);
+
+    this.scriptFile = this.appendFiles({
+      html: this.scriptFile,
+      fileType: 'js',
+      optimizedPath: 'scripts/main.js',
+      sourceFileList: ['scripts/main.js']
+    });
+  }
+}
 
 AppGenerator.prototype.app = function () {
   this.mkdir('app');
@@ -173,8 +201,13 @@ AppGenerator.prototype.app = function () {
     this.mkdir('app/templates/pages');
     this.mkdir('app/templates/partials');
   }
-
-  this.write('app/index.html', this.indexFile);
+  if (this.includeAssemble) {
+    this.write('app/templates/index.hbs', this.indexFile);
+    this.write('app/templates/partials/default_head.hbs', this.headFile);
+    this.write('app/templates/partials/default_scripts.hbs', this.scriptFile);
+  } else {
+    this.write('app/index.html', this.indexFile);
+  }
   this.write('app/scripts/main.js', 'console.log(\'\\\'Allo \\\'Allo!\');');
 };
 
