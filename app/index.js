@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 var fs = require('fs');
 var util = require('util');
 var path = require('path');
@@ -62,6 +62,10 @@ AppGenerator.prototype.askFor = function askFor() {
       name: 'Assemble',
       value: 'includeAssemble',
       checked: false
+    }, {
+      name: 'CakePHP',
+      value: 'includeCakephp',
+      checked: false
     }]
   }];
 
@@ -78,9 +82,28 @@ AppGenerator.prototype.askFor = function askFor() {
     this.includeFoundation = hasFeature('includeFoundation');
     this.includeModernizr = hasFeature('includeModernizr');
     this.includeAssemble = hasFeature('includeAssemble');
+    this.includeCakephp = hasFeature('includeCakephp');
 
     cb();
   }.bind(this));
+};
+
+AppGenerator.prototype.cakephp = function () {
+  if (this.includeCakephp) {
+    this.copy('composer.json', 'composer.json');
+    this.spawnCommand('composer', ['install']);
+  }
+};
+
+AppGenerator.prototype.bake = function () {
+    if (this.includeCakephp) {
+
+      var util = require('util')
+      var exec = require('child_process').exec;
+
+      function puts(error, stdout, stderr) {util.puts(stdout)}
+      exec("Vendor/bin/cake bake project App", puts);
+    }
 };
 
 AppGenerator.prototype.gulpfile = function () {
