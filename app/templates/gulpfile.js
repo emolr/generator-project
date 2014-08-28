@@ -92,7 +92,7 @@ gulp.task('clean', function () {
     return gulp.src(['.tmp', 'dist'], { read: false }).pipe($.clean());
 });
 
-gulp.task('build', [<% if (includeAssemble) { %>'assemble'<% } %>, 'html', 'images', 'fonts', 'extras']);
+gulp.task('build', [<% if (includeAssemble) { %>'assemble', <% } %>'html', 'images', 'fonts', 'extras']);
 
 gulp.task('default', ['clean'], function () {
     gulp.start('build');
